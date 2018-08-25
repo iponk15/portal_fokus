@@ -1,0 +1,152 @@
+/* general */
+:root{
+    --red:#DE004B;
+    --dark-red:#7e002b;
+    --primary:#333333;
+    --secondary:#6c7980;
+}
+body{
+    background-color: #f2f2f2; 
+}
+.boxed-layout{
+    max-width: 1425px;
+    width: 100%;
+    margin: 0 auto;
+}
+.m-header .m-header__top{
+    background-color: #ffffff;
+    height: inherit;
+}
+.m-brand__logo-default, .m-brand__logo-inverse{
+    width: 200px;
+    height: 50px;
+}
+.m-footer .m-footer__copyright{
+    color:var(--secondary);
+}
+.m-body .m-wrapper{
+    border-bottom: 2px solid #e8e8e8; 
+    background:none !important;
+}
+/* end general */
+
+/* header */
+.m-header--fixed .m-header .m-header__bottom{
+    margin-top:128px;
+}
+.m-header-menu-wrapper{
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__link{
+    background: none;
+}
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__link .m-menu__link-text,
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs.m-menu__item--active > .m-menu__link .m-menu__link-text{
+    color: var(--secondary);
+}
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__link:hover .m-menu__link-text,
+{
+    color: var(--primary);
+}
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__submenu,
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs.m-menu__item--active-tab > .m-menu__link, .m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs.m-menu__item--hover > .m-menu__link{
+    -webkit-box-shadow: 0px 5px 10px 0px rgba(69, 65, 78, 0.1);
+    -moz-box-shadow: 0px 5px 10px 0px rgba(69, 65, 78, 0.1);
+    box-shadow: 0px 5px 10px 0px rgba(69, 65, 78, 0.1);
+}
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover:not(.m-menu__item--actions) > .m-menu__link .m-menu__link-text, .m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-text, .m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text,
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover:not(.m-menu__item--actions) > .m-menu__link .m-menu__link-icon, .m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-icon, .m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon{
+    color:var(--red);
+}
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__submenu > .m-menu__subnav > .m-menu__item > .m-menu__link .m-menu__link-text,
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--tabs > .m-menu__submenu > .m-menu__subnav > .m-menu__item > .m-menu__link .m-menu__link-icon
+{
+    color:var(--secondary);
+}
+/* end header */
+
+/* component */
+.btn-custom-primary{
+    background: var(--red);
+    color: var(--light);
+}
+.m-link.m-link--primary{
+    color: var(--red);
+}
+.m-link.m-link--primary:hover{
+    color: var(--dark-red);
+}
+.m-link.m-link--custom{
+    color: var(--secondary);
+}
+/* end component */
+
+/* modal custom */
+.note-editor .modal .modal-header .close,  .modal .modal-header .close{
+    position: absolute;
+    right: 25px;
+}
+/* end modal custom */
+/* table custom */
+.m-datatable.m-datatable--subtable > .m-datatable__table > .m-datatable__body .m-datatable__toggle-subtable > i{
+    color: var(--red);
+}
+/* end table custom */
+
+/* login page */
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__head .m-login__title{
+    color: var(--primary);
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__head .m-login__desc{
+    /* color: rgba(0, 0, 0, 0.54); */
+    color: var(--secondary);
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control,
+.m-login.m-login--2 .m-login__wrapper .m-login__container .m-login__form .m-form__group .form-control.m-login__form-input--last{
+    color:var(--primary);
+    background: var(--light);
+    border: 2px solid var(--light)!important;
+    transition: 0.2s ease-in-out;
+    box-shadow: 0px 1px 2px rgba(0,0,0,.1);
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control:focus,
+.m-login.m-login--2 .m-login__wrapper .m-login__container .m-login__form .m-form__group .form-control.m-login__form-input--last:focus{
+    border: 2px solid var(--red);
+    transition: 0.2s ease-in-out;
+}
+
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__account .m-login__account-link,
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .m-login__form-sub .m-checkbox,
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .m-login__form-sub .m-link{
+    color: var(--red);
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__account .m-login__account-link:hover,
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .m-login__form-sub .m-link:hover{
+    color: var(--dark-red);
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .m-login__form-action .m-login__btn{
+    background-color: var(--red); 
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__account .m-login__account-msg,
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control:focus,
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control::placeholder{
+    color: var(--secondary);
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .m-login__form-action .m-login__btn{
+    color: var(--light);
+}
+/* checkbox */
+.m-checkbox.m-checkbox--red>span{
+    border: 1px solid var(--secondary);
+}
+.m-checkbox.m-checkbox--red>input:checked ~ span{
+    border: 1px solid var(--red);
+}
+.m-checkbox.m-checkbox--red>span:after{
+    border: solid var(--red);
+}
+/* end */
+
+/* end login page */
