@@ -2,16 +2,27 @@
 	<div class="m-portlet__head">
 		<div class="m-portlet__head-caption">
 			<div class="m-portlet__head-title">
-				<span class="m-portlet__head-icon m--hide">
-					<i class="flaticon-statistics"></i>
-				</span>
-				<h3 class="m-portlet__head-text">
-					<?php echo $subtitle; ?>
-				</h3>
+				<?php 
+					if(!empty($subtitle)){
+						echo '<span class="m-portlet__head-icon">
+								<i class="flaticon-exclamation-1"></i>
+							</span>
+							<h3 class="m-portlet__head-text">'.$subtitle.'</h3>';
+					}
+				?>
 				<h2 class="m-portlet__head-label m-portlet__head-label btn-custom-primary">
 					<span><?php echo $pagetitle; ?></span>
 				</h2>
 			</div>
+		</div>
+		<div class="m-portlet__head-tools">
+			<ul class="m-portlet__nav">
+				<li class="m-portlet__nav-item">
+					<a href="<?php echo base_url($url) ?>" class="m-portlet__nav-link m-portlet__nav-link--icon ajaxify">
+						<i class="la la-refresh"></i>
+					</a>
+				</li>
+			</ul>
 		</div>
 	</div>
 	<div class="m-portlet__body">
@@ -56,10 +67,10 @@
 		var clas   = '.datatable';
 		var urll   = '<?php echo base_url("group/select"); ?>';
 		var column = [
-			{ field: "no",title: "No. ",filterable: true,width: 80,textAlign: 'center'},
+			{ field: "no",title: "No. ",filterable: true,width: 50,textAlign: 'center'},
 			{ field: "group_nama",title: "Nama Group",filterable: true,width: 100}, 
 			{ field: "group_role",title: "Role Group",filterable: true,width: 100}, 
-			{ field: "group_deskripsi",title: "Deskripsi",filterable: true,width: 150,textAlign: 'center'}, 
+			{ field: "group_deskripsi",title: "Deskripsi",filterable: true,width: 250}, 
 			{ field: "group_status",title: "Status",filterable: true,width: 70,textAlign: 'center'}, 
 			{ field: "action", title: "Action",width: 120,textAlign: 'center'}
 		];

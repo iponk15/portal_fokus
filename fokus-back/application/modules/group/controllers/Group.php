@@ -7,6 +7,7 @@ class Group extends MX_Controller {
 		Author : Irfan Isma Somantri || irfan.isma@gmail.com || 08973950031	
  	*/
 	private $table_db 	= 'fokus_group';
+	private $url        = 'group';
 
 	public function __construct(){
 		parent::__construct();
@@ -14,9 +15,9 @@ class Group extends MX_Controller {
 
 	public function index(){
 		$data['pagetitle'] = 'Group';
-		$data['subtitle']  = NULL;
+		$data['subtitle']  = 'Isi semua daftar group';
+		$data['url']       = $this->url;
 		$data['breadcumb'] = ['index' => base_url("group"), 'Group' => null];
-
 		$this->template->display('group', $data);
 	}
 
@@ -91,24 +92,22 @@ class Group extends MX_Controller {
 		$post   = $this->input->post();
 		$parent	= json_decode($post['parent']);
 		$child	= json_decode($post['child']);
-
 		$this->form_validation->set_rules('role', 'Role', 'callback_group_check');
-
-        if ( $this->form_validation->run( $this ) ){
+        if ( $this->form_validation->run( $this ) )
+        {
 			foreach ($parent as $key => $value) {
-				$value->menu_sub_menu    = [];
+				$value->menu_sub_menu = [];
 				$value->menu_controllers = [];
 				foreach ($child as $key2 => $value2) {
 					if ($value2->parent == $value->menu_id) {
-						$value->menu_sub_menu[]    = $value2;
-						$value->menu_controllers[] = $value2->controller;
+						array_push($value->menu_sub_menu, $value2);
+						array_push($value->menu_controllers, $value2->controller);
 					}
 				};
 				$obj_parent[] = $value;
 			};
 
-			// pre(json_encode($obj_parent),1);
-
+			$ses 					   = $this->session->userdata('homed_session');
 			$data['group_nama'] 	   = $post['nama_group'];
 			$data['group_role_id']     = $post['role'];
 			$data['group_deskripsi']   = $post['deskripsi'];
@@ -116,7 +115,7 @@ class Group extends MX_Controller {
 			$data['group_data']		   = json_encode($obj_parent);
 			$data['group_ip_temp']	   = getUserIP();
 			$data['group_status']	   = '1';
-			$data['group_createdby']   = getSession()->admin_id;
+			$data['group_createdby']   = $ses->user_id;
 			$data['group_createddate'] = date('Y-m-d H:i:s');
 
 			$insert = $this->m_global->insert($this->table_db, $data);
@@ -133,51 +132,28 @@ class Group extends MX_Controller {
 		}
 	}
 
-	public function cobaf()
-	{
-		$Varparent = '[{"menu_id":"1","menu_nama":"Welcome","menu_controllers":"welcome","menu_is_primary":1,"menu_url":"welcome","menu_sub_menu":""},{"menu_id":"2","menu_nama":"Planning","menu_controllers":"","menu_is_primary":"","menu_url":"","menu_sub_menu":""},{"menu_id":"3","menu_nama":"Something is wrong","menu_controllers":"","menu_is_primary":"","menu_url":"","menu_sub_menu":""}]';
-		$Varchild  = '[{"text":"Periode","icon_menu":"event-calendar-symbol","controller":"periode","parent":2},{"text":"Kuota","icon_menu":"open-box","controller":"kuota","parent":2},{"text":"Blacklist","icon_menu":"circle","controller":"blacklist","parent":2},{"text":"Something is wrong Schedule","icon_menu":"settings","controller":"Something is wrong_schedule","parent":2},{"text":"Admin","icon_menu":"profile-1","controller":"admin","parent":3},{"text":"Menu","icon_menu":"puzzle","controller":"menu","parent":3},{"text":"Group","icon_menu":"users","controller":"group","parent":3},{"text":"Icon","icon_menu":"medical","controller":"icon","parent":3},{"text":"Role","icon_menu":"web","controller":"role","parent":3},{"text":"FAQ","icon_menu":"questions-circular-button","controller":"faq","parent":3},{"text":"Contact","icon_menu":"support","controller":"contact","parent":3}]';
-		$p 		= json_decode($Varparent);
-		$c 		= json_decode($Varchild);
-
-		pre($p);
-		pre($c);
-		foreach ($p as $parent) {
-			// pre($parent);
-			foreach ($c as $child) {
-				if ($child->parent==$parent->menu_id) {
-					// echo $parent->menu_sub_menu;
-					$parent->menu_sub_menu[] = $child;
-					$parent->menu_controllers[] = $child->controller;
-					// $data['menu_sub_menu'][] = $child;
-					// $data['menu_controllers'][] = $child->controller;
-				}
-				
-			}
-			$obj_parent[] = $parent;
-		}
-	}
-
 	public function action_edit($id){
-		$post       = $this->input->post();
-		$parent	    = json_decode($post['parent']);
-		$child	    = json_decode($post['child']);
+		$post   	= $this->input->post();
+		$parent		= json_decode($post['parent']);
+		$child		= json_decode($post['child']);
 		$param_role = $post['param_role'];
 
 		$this->form_validation->set_rules('role', 'Role', 'callback_group_check['.$param_role.']');
 
         if ( $this->form_validation->run( $this ) ){
 			foreach ($parent as $key => $value) {
+				$value->menu_sub_menu    = [];
+				$value->menu_controllers = [];
+
 				foreach ($child as $key2 => $value2) {
 					if ($value2->parent == $value->menu_id) {
-						$value->menu_sub_menu[]    = $value2;
-						$value->menu_controllers[] = $value2->controller;
+						array_push($value->menu_sub_menu, $value2);
+						array_push($value->menu_controllers, $value2->controller);
 					}
 				};
-
 				$obj_parent[] = $value;
 			};
-			
+
 			$data['group_nama'] 	  = $post['nama_group'];
 			$data['group_role_id']    = $post['role'];
 			$data['group_deskripsi']  = $post['deskripsi'];
@@ -185,7 +161,7 @@ class Group extends MX_Controller {
 			$data['group_data']		  = json_encode($obj_parent);
 			$data['group_ip_temp']	  = getUserIP();
 			$data['group_status']	  = '1';
-			$data['group_updatedby']  = gengetSession()->admin_id;;
+			$data['group_updatedby']  = getSession()->admin_id;
 			$data['group_lastupdate'] = date('Y-m-d H:i:s');
 
 			$insert = $this->m_global->update($this->table_db, $data, ['md5(group_id)' => $id]);

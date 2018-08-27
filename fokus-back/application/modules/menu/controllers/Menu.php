@@ -114,77 +114,98 @@ class Menu extends CI_Controller {
 
 		$c_menu 	= array();
 
-		$count_order = array_count_values($post['order']);
-		// pre($count_order, 1);
-
-		$status = 'unique';
-		foreach ($count_order as $key => $value) {
-			if ($value > 1) {
-				$status = 'duplicate';
-			}
-		}
-
-		if ($status == 'duplicate') {
-			echo '<script>alert("Order tidak boleh ada yang sama")</script>';
-			$this->form_validation->set_message('Duplicate Input','Order tidak boleh ada yang sama');
-			$text['pesan'] = 'Order tidak boleh ada yang sama'; 
-			json_encode($text['pesan']);
-		} else {
-			if (!empty($post['title'])) {
-
-				for ($i=0; $i < count($post['title']) ; $i++) {
-					$order 				= ($post['order'][$i] == '' ? array_push($c_menu, '1') : '');
-					$title 				= ($post['title'][$i] == '' ? array_push($c_menu, '1') : '');
-					$icon_menu 			= ($post['icon_menu'][$i] == '' ? array_push($c_menu, '1') : '');
-					$icon_menu_fa 		= ($post['icon_menu_fa'][$i] == '' ? array_push($c_menu, '1') : '');
-					$ctrl_submenu 		= ($post['ctrl_submenu'][$i] == '' ? array_push($c_menu, '1') : '');
-				}
-				$tot_array      = count($post['title']);
-
-				for ($i=0; $i < $tot_array; $i++) { 
-					$sub_menu = array('order' => $post['order'][$i], 'text' => $post['title'][$i], 'icon_menu' => $post['icon_menu'][$i], 'icon' => $post['icon_menu_fa'][$i], 'controller' => $post['ctrl_submenu'][$i]);
-					array_push($object, $sub_menu);
-				}
-			}
-
-			if (!empty($c_menu)) {
-				$end['status']     = 0;
-				$end['message']    = 'Tolong isi semua kolom';
+		if (empty($post['order'])) {
+			$data['menu_nama']			= $post['menu_nama'];
+			$data['menu_is_primary']	= $post['menu_is_primary'];
+			$data['menu_url'] 			= $post['menu_ctrl'];
+			$data['menu_controllers'] 	= $post['menu_ctrl'];
+			$data['menu_status'] 		= '1';
+			$data['menu_ip_temp'] 		= getUserIP();
+			$data['menu_createddate'] 	= date('Y-m-d H:i:s');
+			$data['menu_createdby'] 	= $ses->user_id;
+			$insert = $this->m_global->insert($this->table_db, $data);
+			if ($insert) {
+				$end['status']     = 1;
+				$end['message']    = 'Successfully';
 			} else {
-				$data['menu_nama']			= $post['menu_nama'];
-				$data['menu_is_primary']	= (isset($post['menu_is_primary']) ? $post['menu_is_primary'] : '0');
-				$data['menu_sub_menu'] 		= ($post['menu_sub_menu'] == 1 ? json_encode($object) : NULL);
-				$data['menu_url'] 			= ($post['menu_sub_menu'] == 1 ? NULL : $post['menu_ctrl']);
-				$data['menu_controllers'] 	= ($post['menu_ctrl'] == '' ? json_encode($post['ctrl_submenu']) : $post['menu_ctrl']);
-				$data['menu_status'] 		= '1';
-				$data['menu_ip_temp'] 		= getUserIP();
-				$data['menu_createddate'] 	= date('Y-m-d H:i:s');
-				$data['menu_createdby'] 	= getSession()->admin_id;
-				$insert 					= $this->m_global->insert($this->table_db, $data);
-				
+				$end['status']     = 0;
+				$end['message']    = 'failed';
+			}
+			echo json_encode( $end );
+		}		
+		else{
+			$count_order = array_count_values($post['order']);
+
+			$status = 'unique';
+			foreach ($count_order as $key => $value) {
+				if ($value > 1) {
+					$status = 'duplicate';
+				}
+			}
+
+			if ($status == 'duplicate') {
+				echo '<script>alert("Order tidak boleh ada yang sama")</script>';
+				$this->form_validation->set_message('Duplicate Input','Order tidak boleh ada yang sama');
+				$text['pesan'] = 'Order tidak boleh ada yang sama'; 
+				json_encode($text['pesan']);
+			} else {
 				if (!empty($post['title'])) {
 
-					$lastid = $this->db->insert_id();
-					for ($i=0; $i < $tot_array; $i++) { 
-						$sub_menu = array('parent' => "".$lastid."", 'order' => $post['order'][$i], 'text' => $post['title'][$i], 'icon_menu' => $post['icon_menu'][$i], 'icon' => $post['icon_menu_fa'][$i], 'controller' => $post['ctrl_submenu'][$i]);
-						array_push($object2, $sub_menu);
+					for ($i=0; $i < count($post['title']) ; $i++) {
+						$order 				= ($post['order'][$i] == '' ? array_push($c_menu, '1') : '');
+						$title 				= ($post['title'][$i] == '' ? array_push($c_menu, '1') : '');
+						$icon_menu 			= ($post['icon_menu'][$i] == '' ? array_push($c_menu, '1') : '');
+						$icon_menu_fa 		= ($post['icon_menu_fa'][$i] == '' ? array_push($c_menu, '1') : '');
+						$ctrl_submenu 		= ($post['ctrl_submenu'][$i] == '' ? array_push($c_menu, '1') : '');
 					}
+					$tot_array      = count($post['title']);
 
-					$upd['menu_sub_menu'] 		=  json_encode($object2);
-				
-					$update = $this->m_global->update($this->table_db, $upd, ['menu_id' => $lastid]);
+					for ($i=0; $i < $tot_array; $i++) { 
+						$sub_menu = array('order' => $post['order'][$i], 'text' => $post['title'][$i], 'icon_menu' => $post['icon_menu'][$i], 'icon' => $post['icon_menu_fa'][$i], 'controller' => $post['ctrl_submenu'][$i]);
+						array_push($object, $sub_menu);
+					}
 				}
-				if ($insert) {
-					$end['status']     = 1;
-					$end['message']    = 'Successfully';
-				} else {
+
+				if (!empty($c_menu)) {
 					$end['status']     = 0;
-					$end['message']    = 'failed';
-				}
-			}		
+					$end['message']    = 'Tolong isi semua kolom';
+				} else {
+					$data['menu_nama']			= $post['menu_nama'];
+					$data['menu_is_primary']	= (isset($post['menu_is_primary']) ? $post['menu_is_primary'] : '0');
+					$data['menu_sub_menu'] 		= ($post['menu_sub_menu'] == 1 ? json_encode($object) : NULL);
+					$data['menu_url'] 			= ($post['menu_sub_menu'] == 1 ? NULL : $post['menu_ctrl']);
+					$data['menu_controllers'] 	= ($post['menu_ctrl'] == '' ? json_encode($post['ctrl_submenu']) : $post['menu_ctrl']);
+					$data['menu_status'] 		= '1';
+					$data['menu_ip_temp'] 		= getUserIP();
+					$data['menu_createddate'] 	= date('Y-m-d H:i:s');
+					$data['menu_createdby'] 	= $ses->user_id;
+					$insert = $this->m_global->insert($this->table_db, $data);
+					if (!empty($post['title'])) {
 
-			echo json_encode( $end );
+						$lastid = $this->db->insert_id();
+						for ($i=0; $i < $tot_array; $i++) { 
+							$sub_menu = array('parent' => "".$lastid."", 'order' => $post['order'][$i], 'text' => $post['title'][$i], 'icon_menu' => $post['icon_menu'][$i], 'icon' => $post['icon_menu_fa'][$i], 'controller' => $post['ctrl_submenu'][$i]);
+							array_push($object2, $sub_menu);
+						}
+
+						$upd['menu_sub_menu'] 		=  json_encode($object2);
+					
+						$update = $this->m_global->update($this->table_db, $upd, ['menu_id' => $lastid]);
+					}
+					if ($insert) {
+						$end['status']     = 1;
+						$end['message']    = 'Successfully';
+					} else {
+						$end['status']     = 0;
+						$end['message']    = 'failed';
+					}
+				}		
+
+				echo json_encode( $end );
+			}
+			
 		}
+
 	}
 
 	public function action_edit($id)
@@ -194,67 +215,84 @@ class Menu extends CI_Controller {
 		$object 		= [];
 		$c_menu 	= array();
 
-		$count_order = array_count_values($post['order']);
-		// pre($count_order, 1);
+		if (empty($post['order'])) {
+			$data['menu_nama']			= $post['menu_nama'];
+			$data['menu_is_primary']	= $post['menu_is_primary'];
+			$data['menu_sub_menu']		= null;
+			$data['menu_url'] 			= $post['menu_ctrl'];
+			$data['menu_controllers'] 	= $post['menu_ctrl'];
+			$data['menu_lastupdate']  	= date('Y-m-d H:i:s');
+			$data['menu_ip_temp']     	= getUserIP();
+			$data['menu_udpatedby']   	= $ses->user_id;
+			$update 				  	= $this->m_global->update($this->table_db, $data, ['menu_id' => $id]);
+			if ($update) {
+				$end['status']     = 1;
+				$end['message']    = 'Successfully';
+			} else {
+				$end['status']     = 0;
+				$end['message']    = 'failed';
+			}
+			echo json_encode( $end );
+		}
+		else{
+			$count_order = array_count_values($post['order']);
 
-		$status = 'unique';
-		foreach ($count_order as $key => $value) {
-			if ($value > 1) {
-				$status = 'duplicate';
+			$status = 'unique';
+			foreach ($count_order as $key => $value) {
+				if ($value > 1) {
+					$status = 'duplicate';
+				}
+			}
+
+			if ($status == 'duplicate') {
+				echo '<script>alert("Order tidak boleh ada yang sama")</script>';
+				$this->form_validation->set_message('Duplicate Input','Order tidak boleh ada yang sama');
+				$text['pesan'] = 'Order tidak boleh ada yang sama'; 
+				json_encode($text['pesan']);
+			} else {
+				if (!empty($post['title'])) {
+
+					for ($i=0; $i < count($post['title']) ; $i++) {
+						$order 				= ($post['order'][$i] == '' ? array_push($c_menu, '1') : '');
+						$title 				= ($post['title'][$i] == '' ? array_push($c_menu, '1') : '');
+						$icon_menu 			= ($post['icon_menu'][$i] == '' ? array_push($c_menu, '1') : '');
+						$icon_menu_fa 		= ($post['icon_menu_fa'][$i] == '' ? array_push($c_menu, '1') : '');
+						$ctrl_submenu 		= ($post['ctrl_submenu'][$i] == '' ? array_push($c_menu, '1') : '');
+					}
+
+					$tot_array      = count($post['title']);
+
+					for ($i=0; $i < $tot_array; $i++) { 
+						$sub_menu = array('parent' => "".$id."", 'order' => $post['order'][$i], 'text' => $post['title'][$i], 'icon_menu' => $post['icon_menu'][$i], 'icon' => $post['icon_menu_fa'][$i], 'controller' => $post['ctrl_submenu'][$i]);
+						array_push($object, $sub_menu);
+					}
+				} 
+
+				if (!empty($c_menu)) {
+					$end['status']     = 0;
+					$end['message']    = 'Tolong isi semua kolom';
+				} else {
+					$data['menu_nama']	      = $post['menu_nama'];
+					$data['menu_is_primary']  = (isset($post['menu_is_primary']) ? $post['menu_is_primary'] : NULL);
+					$data['menu_sub_menu'] 	  = ($post['menu_sub_menu'] == 1 ? json_encode($object) : NULL);
+					$data['menu_url'] 		  = ($post['menu_sub_menu'] == 1 ? NULL : $post['menu_ctrl']);
+					$data['menu_controllers'] = ($post['menu_ctrl'] == '' ? json_encode($post['ctrl_submenu']) : $post['menu_ctrl']);
+					$data['menu_lastupdate']  = date('Y-m-d H:i:s');
+					$data['menu_ip_temp']     = getUserIP();
+					$data['menu_udpatedby']   = $ses->user_id;
+					$update 				  = $this->m_global->update($this->table_db, $data, ['menu_id' => $id]);
+					if ($update) {
+						$end['status']     = 1;
+						$end['message']    = 'Successfully';
+					} else {
+						$end['status']     = 0;
+						$end['message']    = 'failed';
+					}
+
+					echo json_encode( $end );
+				}		
 			}
 		}
-
-		if ($status == 'duplicate') {
-			echo '<script>alert("Order tidak boleh ada yang sama")</script>';
-			$this->form_validation->set_message('Duplicate Input','Order tidak boleh ada yang sama');
-			$text['pesan'] = 'Order tidak boleh ada yang sama'; 
-			json_encode($text['pesan']);
-		} else {
-			if (!empty($post['title'])) {
-
-				for ($i=0; $i < count($post['title']) ; $i++) {
-					$order 				= ($post['order'][$i] == '' ? array_push($c_menu, '1') : '');
-					$title 				= ($post['title'][$i] == '' ? array_push($c_menu, '1') : '');
-					$icon_menu 			= ($post['icon_menu'][$i] == '' ? array_push($c_menu, '1') : '');
-					$icon_menu_fa 		= ($post['icon_menu_fa'][$i] == '' ? array_push($c_menu, '1') : '');
-					$ctrl_submenu 		= ($post['ctrl_submenu'][$i] == '' ? array_push($c_menu, '1') : '');
-				}
-
-				$tot_array      = count($post['title']);
-
-				for ($i=0; $i < $tot_array; $i++) { 
-					$sub_menu = array('parent' => "".$id."", 'order' => $post['order'][$i], 'text' => $post['title'][$i], 'icon_menu' => $post['icon_menu'][$i], 'icon' => $post['icon_menu_fa'][$i], 'controller' => $post['ctrl_submenu'][$i]);
-					array_push($object, $sub_menu);
-				}
-			} 
-
-			if (!empty($c_menu)) {
-				$end['status']     = 0;
-				$end['message']    = 'Tolong isi semua kolom';
-			} else {
-				$data['menu_nama']	      = $post['menu_nama'];
-				$data['menu_is_primary']  = (isset($post['menu_is_primary']) ? $post['menu_is_primary'] : NULL);
-				$data['menu_sub_menu'] 	  = ($post['menu_sub_menu'] == 1 ? json_encode($object) : NULL);
-				$data['menu_url'] 		  = ($post['menu_sub_menu'] == 1 ? NULL : $post['menu_ctrl']);
-				$data['menu_controllers'] = ($post['menu_ctrl'] == '' ? json_encode($post['ctrl_submenu']) : $post['menu_ctrl']);
-				$data['menu_lastupdate']  = date('Y-m-d H:i:s');
-				$data['menu_ip_temp']     = getUserIP();
-				$data['menu_udpatedby']   = $ses->user_id;
-				$update 				  = $this->m_global->update($this->table_db, $data, ['menu_id' => $id]);
-				if ($update) {
-					$end['status']     = 1;
-					$end['message']    = 'Successfully';
-				} else {
-					$end['status']     = 0;
-					$end['message']    = 'failed';
-				}
-
-			}		
-		}
-		
-
-
-		echo json_encode( $end );
 
 	}
 
