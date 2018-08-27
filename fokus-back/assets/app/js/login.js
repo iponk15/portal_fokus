@@ -59,10 +59,13 @@ var SnippetLogin = function(){
                     success:function(e,t,r,s){
                         if(e.status == 1){
                             window.location = base_url + 'welcome';
+                        }else if(e.status == 2){
+                            setTimeout(function(){
+                                a.removeClass("m-loader m-loader--right m-loader--light").attr("disabled",!1),i(l,"danger",e.message);
+                            },100);
                         }else{
                             setTimeout(function(){
-                                a.removeClass("m-loader m-loader--right m-loader--light").attr("disabled",!1),
-                                i(l,"danger","Incorrect username or password. Please try again.")
+                                a.removeClass("m-loader m-loader--right m-loader--light").attr("disabled",!1),i(l,"danger","Incorrect username or password. Please try again.");
                             },100);
                         }
                     }

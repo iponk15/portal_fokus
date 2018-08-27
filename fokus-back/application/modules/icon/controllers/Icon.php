@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Icon extends CI_Controller {
 	private $prefix         = 'icon_';
-	private $table         	= 'cuti_icon';
+	private $table         	= 'fokus_icon';
 	private $url            = 'icon';
 	private $rule_valid     = 'xss_clean|encode_php_tags';
 

@@ -6,7 +6,7 @@ class Group extends MX_Controller {
 	/**
 		Author : Irfan Isma Somantri || irfan.isma@gmail.com || 08973950031	
  	*/
-	private $table_db 	= 'user_group';
+	private $table_db 	= 'fokus_group';
 
 	public function __construct(){
 		parent::__construct();
@@ -43,7 +43,7 @@ class Group extends MX_Controller {
         }
 
         // set record data
-        $join            = [ ['role', 'group_role_id = role_id', 'left'] ];
+        $join            = [ ['fokus_role', 'group_role_id = role_id', 'left'] ];
         $where           = null;
         $select          = 'group_id,group_nama,role_nama,group_role_id,role_nama,group_status, group_deskripsi';
         $data['total']   = $this->m_global->count($this->table_db, $join, $where, $where_e);
@@ -82,7 +82,7 @@ class Group extends MX_Controller {
 		$data['pagetitle'] = 'Tambah Group';
 		$data['subtitle']  = NULL;
 		$data['breadcumb'] = ['index' => base_url("group"), 'Group' => null, 'Form Tambah' => base_url('group/show_add')];
-		$data['menu']      = $this->m_global->get('config_menu');
+		$data['menu']      = $this->m_global->get('fokus_menu');
 
 		$this->template->display('group/group_add', $data);
 	}
@@ -91,21 +91,24 @@ class Group extends MX_Controller {
 		$post   = $this->input->post();
 		$parent	= json_decode($post['parent']);
 		$child	= json_decode($post['child']);
-		$this->form_validation->set_rules('role', 'Role', 'callback_group_check');
-        if ( $this->form_validation->run( $this ) )
-        {
 
+		$this->form_validation->set_rules('role', 'Role', 'callback_group_check');
+
+        if ( $this->form_validation->run( $this ) ){
 			foreach ($parent as $key => $value) {
+				$value->menu_sub_menu    = [];
+				$value->menu_controllers = [];
 				foreach ($child as $key2 => $value2) {
 					if ($value2->parent == $value->menu_id) {
-						$value->menu_sub_menu[] = $value2;
+						$value->menu_sub_menu[]    = $value2;
 						$value->menu_controllers[] = $value2->controller;
 					}
 				};
 				$obj_parent[] = $value;
 			};
 
-			$ses 					   = $this->session->userdata('homed_session');
+			// pre(json_encode($obj_parent),1);
+
 			$data['group_nama'] 	   = $post['nama_group'];
 			$data['group_role_id']     = $post['role'];
 			$data['group_deskripsi']   = $post['deskripsi'];
@@ -113,7 +116,7 @@ class Group extends MX_Controller {
 			$data['group_data']		   = json_encode($obj_parent);
 			$data['group_ip_temp']	   = getUserIP();
 			$data['group_status']	   = '1';
-			$data['group_createdby']   = $ses->user_id;
+			$data['group_createdby']   = getSession()->admin_id;
 			$data['group_createddate'] = date('Y-m-d H:i:s');
 
 			$insert = $this->m_global->insert($this->table_db, $data);
@@ -153,46 +156,36 @@ class Group extends MX_Controller {
 			}
 			$obj_parent[] = $parent;
 		}
-		// pre($data,1);
-		// pre($obj_parent,1);
 	}
+
 	public function action_edit($id){
-		$post   = $this->input->post();
-		// pre($post);
-		$parent	= json_decode($post['parent']);
-		$child	= json_decode($post['child']);
+		$post       = $this->input->post();
+		$parent	    = json_decode($post['parent']);
+		$child	    = json_decode($post['child']);
 		$param_role = $post['param_role'];
-		// pre($post,1);
 
 		$this->form_validation->set_rules('role', 'Role', 'callback_group_check['.$param_role.']');
-        if ( $this->form_validation->run( $this ) )
-        {
-        	// pre($parent);
-        	// pre($child);
-        	// $obj_parent = [];
+
+        if ( $this->form_validation->run( $this ) ){
 			foreach ($parent as $key => $value) {
 				foreach ($child as $key2 => $value2) {
 					if ($value2->parent == $value->menu_id) {
-						// array_push($value->menu_sub_menu,'1');
-						// array_push($value->menu_controllers,'2');
-						$value->menu_sub_menu[] = $value2;
+						$value->menu_sub_menu[]    = $value2;
 						$value->menu_controllers[] = $value2->controller;
-						// pre($value2);
 					}
 				};
-				// array_push($obj_parent,$value);
+
 				$obj_parent[] = $value;
 			};
-			// pre($obj_parent,1);
-			$ses 					   = $this->session->userdata('homed_session');
-			$data['group_nama'] 	   = $post['nama_group'];
-			$data['group_role_id']     = $post['role'];
-			$data['group_deskripsi']   = $post['deskripsi'];
-			$data['group_controller']  = $post['controller'];
-			$data['group_data']		   = json_encode($obj_parent);
-			$data['group_ip_temp']	   = getUserIP();
-			$data['group_status']	   = '1';
-			$data['group_updatedby']   = $ses->user_id;;
+			
+			$data['group_nama'] 	  = $post['nama_group'];
+			$data['group_role_id']    = $post['role'];
+			$data['group_deskripsi']  = $post['deskripsi'];
+			$data['group_controller'] = $post['controller'];
+			$data['group_data']		  = json_encode($obj_parent);
+			$data['group_ip_temp']	  = getUserIP();
+			$data['group_status']	  = '1';
+			$data['group_updatedby']  = gengetSession()->admin_id;;
 			$data['group_lastupdate'] = date('Y-m-d H:i:s');
 
 			$insert = $this->m_global->update($this->table_db, $data, ['md5(group_id)' => $id]);
@@ -216,11 +209,10 @@ class Group extends MX_Controller {
 		$data['breadcumb'] = ['index' => base_url("group"), 'Group' => null, 'Form Edit' => base_url('group/show_edit/'.$id)];
 		
 		// get data group
-		$join   		 = [['role','group_role_id = role_id','left']];
+		$join   		 = [['fokus_role','group_role_id = role_id','left']];
 		$select 		 = 'group_id,group_nama,role_id,role_nama,group_deskripsi,group_data' ;
 		$data['records'] = $this->m_global->get($this->table_db, $join, ['md5(group_id)' => $id],$select)[0];
-		$data['menu']      = $this->m_global->get('config_menu');
-		// pre($data['records'],1);
+		$data['menu']    = $this->m_global->get('fokus_menu');
 
 		$this->template->display('group/group_edit', $data);
 	}
@@ -274,7 +266,7 @@ class Group extends MX_Controller {
 	}
 
 	public function group_check($role_id, $param=null){
-	    $cek = $this->m_global->get('user_group', NULL, ['group_role_id' => $role_id], 'group_role_id');
+	    $cek = $this->m_global->get('fokus_group', NULL, ['group_role_id' => $role_id], 'group_role_id');
 		if ($param) {
 			if (empty($cek)){            
 	            return TRUE;

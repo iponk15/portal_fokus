@@ -1,3 +1,4 @@
+<div style="display: none;" class="tab-title"> <?php echo $pagetitle; ?></div>
 <div class="m-subheader ">
     <div class="d-flex align-items-center">
         <?php echo (empty($inpeg) ? null : '<h3 class="m-subheader__title m-subheader__title--separator">'.$inpeg.'</h3>' ) ?>

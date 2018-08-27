@@ -95,7 +95,7 @@ $(document).on('click','.ajaxify',function(e){
         $('.m-scroll-top').trigger('click');
 
         var title = $('.tab-title').text();
-        $('title').text(title + ' || Homedika');
+        $('title').text('Fokus ||' + title );
     });
 
 });

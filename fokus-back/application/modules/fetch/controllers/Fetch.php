@@ -47,7 +47,7 @@ class Fetch extends MX_Controller {
     public function fetch_icon($type){
         $q                       = $_GET['q'];
         $where_e                 = "icon_icon LIKE '%".$q."%' AND icon_tipe = ".$type." AND icon_status = '1'"; 
-        $result                  = $this->m_global->get( 'cuti_icon', null, null, '*', $where_e, null, 0, 5, null, 1 );
+        $result                  = $this->m_global->get( 'fokus_icon', null, null, '*', $where_e, null, 0, 5, null, 1 );
         $data                    = [];
 
         for ($i=0; $i < count( $result ); $i++) {

@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Menu extends CI_Controller {
 	private $prefix     = 'menu';
 	private $url        = 'menu';
-	private $table_db   = 'config_menu';
+	private $table_db   = 'fokus_menu';
 	private $rule_valid = 'xss_clean|encode_php_tags';
 
 	public function index(){
@@ -159,8 +159,9 @@ class Menu extends CI_Controller {
 				$data['menu_status'] 		= '1';
 				$data['menu_ip_temp'] 		= getUserIP();
 				$data['menu_createddate'] 	= date('Y-m-d H:i:s');
-				$data['menu_createdby'] 	= $ses->user_id;
-				$insert = $this->m_global->insert($this->table_db, $data);
+				$data['menu_createdby'] 	= getSession()->admin_id;
+				$insert 					= $this->m_global->insert($this->table_db, $data);
+				
 				if (!empty($post['title'])) {
 
 					$lastid = $this->db->insert_id();

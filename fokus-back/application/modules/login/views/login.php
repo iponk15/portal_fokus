@@ -32,6 +32,9 @@
 		<link href="<?php echo base_url(); ?>assets/demo/base/style.bundle.css" rel="stylesheet" type="text/css" />
 		<link href="<?php echo base_url('assets/app/css/custom.css'); ?>" rel="stylesheet" type="text/css" />
         <link rel="shortcut icon" href="<?php //echo base_url('assets/app/media/img/icons/favicon.png'); ?>" />
+		<script src="<?php echo base_url(); ?>assets/vendors/base/vendors.bundle.js" type="text/javascript"></script>
+		<script src="<?php echo base_url(); ?>assets/demo/base/scripts.bundle.js" type="text/javascript"></script>
+		<script src="<?php echo base_url(); ?>assets/app/js/login.js" type="text/javascript"></script>
     </head>
     <body  class="m--skin- m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--fixed m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default"  >
 		<div class="m-grid m-grid--hor m-grid--root m-page">
@@ -50,7 +53,7 @@
 							</div>
 							<form method="POST" class="m-login__form m-form" action="<?php echo base_url('login/masuk_login'); ?>">
 								<div class="form-group m-form__group">
-									<input class="form-control m-input" type="text" placeholder="Email" name="user_email" autocomplete="off">
+									<input class="form-control m-input user_email" type="text" placeholder="Email" name="user_email" autocomplete="off">
 								</div>
 								<div class="form-group m-form__group">
 									<input class="form-control m-input m-login__form-input--last" type="password" placeholder="Password" name="password">
@@ -67,7 +70,7 @@
 									</div>
 								</div>
 								<div class="m-login__form-action">
-									<button id="" type="submit" class="btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air m-login__btn m-login__btn--primary">Masuk</button>
+									<button id="m_login_signin_submit" type="submit" class="btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air m-login__btn m-login__btn--primary">Masuk</button>
 								</div>
 							</form>
 						</div>
@@ -129,8 +132,12 @@
 				</div>
 			</div>				
 		</div>
-		<script src="<?php echo base_url(); ?>assets/vendors/base/vendors.bundle.js" type="text/javascript"></script>
-		<script src="<?php echo base_url(); ?>assets/demo/base/scripts.bundle.js" type="text/javascript"></script>
-		<script src="<?php echo base_url(); ?>assets/app/js/login.js" type="text/javascript"></script>            
+		<script type="text/javascript">
+			function copas(prm) {
+				var val = $(prm).attr('data-value');
+				$('.user_email').val(val);
+			}
+		</script>
+		
 	</body>
 </html>

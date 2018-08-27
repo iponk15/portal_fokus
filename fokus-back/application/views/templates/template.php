@@ -15,7 +15,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>App Name || <?php echo ($pagetitle != '' ? $pagetitle : 'Blank'); ?></title>
+        <title>Fokus || <?php echo ($pagetitle != '' ? $pagetitle : 'Blank'); ?></title>
         <meta name="description" content="Latest updates and statistic charts"> 
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
         

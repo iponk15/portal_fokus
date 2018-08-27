@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Role extends MX_Controller {
 	private $prefix         = 'role_';
     private $url            = 'role';
-    private $table_db       = 'role';
+    private $table_db       = 'fokus_role';
     private $pagetitle      = 'Role';
     private $rule_valid     = 'xss_clean|encode_php_tags';
 

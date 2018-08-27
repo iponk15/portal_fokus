@@ -6,47 +6,62 @@
 
 class Login extends CI_Controller {
 
+    private $url        = 'login';
+	private $table_db   = 'fokus_admin';
+	private $table_prfx = 'admin_';
+
 	public function index(){
-		$options = [
-			'cost' => 11,
-			'keys' => '735wnc8tcny8tgc4ry'
-		];
-		echo $hash = password_hash('irfanIsma', PASSWORD_BCRYPT, $options);
-		echo '<br>';
-
-		if (password_verify('irfanIsma', $hash)) {
-			echo 'Password is valid!';
-		} else {
-			echo 'Invalid password.';
-		}
-
 		$this->load->view('login/login');
 	}
 
 	function masuk_login(){
-		$post      	= $this->input->post();
-		$pass      	= genPass($post['user_email'], $post['password']);
-		// echo 'Argon2 hash: ' . password_hash('rasmuslerdorf', PASSWORD_ARGON2I);
-		
-		pre($post,1);
-		
-		$join      	= [['user_group ug', 'u.user_role_id = ug.group_role_id','left']];
-		$select    	= 'u.user_id,u.user_email,u.user_role_id,ug.group_controller';
-		$where 		= ['u.user_email' => $post['user_email'], 'u.user_password' => $pass, 'u.user_status' => '1','u.user_tipe' => '2'];
-		$where_e 	= 'ug.group_role_id = u.user_role_id';
-		$dataAdmin 	= $this->m_global->get('user u',$join,$where,$select,$where_e);
-		$cek 	   	= count($dataAdmin);
-		
-		if($cek == 1){
-			$this->session->set_userdata('homed_session', $dataAdmin[0]);
+		$post     = $this->input->post();
+		$where_e  = "SUBSTRING_INDEX(admin_email,'@',1) = '".$post['user_email']."' OR admin_email = '".$post['user_email']."'";
+		$select   = 'admin_email,admin_salt';
+		$cekEMail = $this->m_global->get($this->table_db,null,null,$select,$where_e);
 
-			$data['status']  = '1';
-			$data['message'] = 'Berhasil Login';
-			
+		if(!empty($cekEMail)){
+			if(count($cekEMail) > '1'){
+				$list = listEmail($cekEMail);
+				$data['status']  = '2';
+				$data['message'] = 'Mohon maaf username anda ada lebih dari 1 '.$list.'. Silahkan pilih salah satu';
+				
+				echo json_encode($data);
+			}else{
+				if(valid_email($post['user_email'])){
+					$ver  = $this->salt->verify($cekEMail[0]->admin_email, $cekEMail[0]->admin_salt);
+
+					if($ver == '1'){
+						$salt = $cekEMail[0]->admin_salt;
+					}else{
+						$data['status']  = '2';
+						$data['message'] = 'Mohon maaf verifikasi email anda tidak valid';
+
+						echo json_encode($data);exit;
+					}
+				}else{
+					$salt = $cekEMail[0]->admin_salt;	
+				}
+			}
 		}else{
-			$data['status']  = '0';
-			$data['message'] = 'Maaf akun yang anda masukan keliru pak';
+			$data['status']  = '2';
+			$data['message'] = 'Mohon maaf username / email belum terdaftar, silhkan registrasi';
 
+			echo json_encode($data);exit;
+		}
+
+		$where = ['admin_email' => $cekEMail[0]->admin_email, 'admin_password' => genPass($salt,$post['password'])];
+		$sclt  = 'admin_id,admin_nama,admin_email,admin_tipe,admin_role_id';
+		$login = $this->m_global->get($this->table_db,null,$where,$sclt);
+		
+		if(count($login) == '1'){
+			$this->session->set_userdata($this->config->item('nama_session'), $login[0]);
+
+			$data['status']  = true;
+			$data['message'] = 'Berhasil login';
+		}else{
+			$data['status']  = false;
+			$data['message'] = 'Gagal login';
 		}
 
 		echo json_encode($data);
@@ -57,11 +72,6 @@ class Login extends CI_Controller {
 
         redirect(base_url().'login');
 	}
-	
-	function captcha(){
-		echo $this->recaptcha->render();
-	}
-
 }
 
 /* End of file Login.php */

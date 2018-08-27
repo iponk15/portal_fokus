@@ -32,29 +32,13 @@
 	function menu_role($param){
 		$CI 	   = &get_instance();
 		$select    = 'group_id,group_role_id,group_nama,group_deskripsi,group_ip_temp,group_data,group_controller,group_status';
-		$data_menu = $CI->m_global->get('user_group',null,null,$select, ['group_role_id' => $param]);
+		$data_menu = $CI->m_global->get('fokus_group',null,null,$select, ['group_role_id' => $param]);
 
 		return $data_menu;
 	}
 
 	function isJSON($string){
 	   return is_string($string) && is_array(json_decode($string, true)) ? true : false;
-	}
-
-	function genPass($string,$password){
-		$CI 	= &get_instance();
-		$key    = $CI->config->item('secret_key');
-		$salt   = sha1(md5($string).$key);
-		$hasil  = md5($salt.$password);
-
-		return $hasil;
-	}
-
-	function is_ccanalyst($nopeg){
-		$CI    = &get_instance();
-		$hasil = $CI->m_global->count('cuti_admin',null,['admin_nopeg' => $nopeg]);
-
-		return $hasil;
 	}
 
 	function info_ses($user_id){
@@ -85,27 +69,8 @@
 
     	return $list[$param];
 	}
-	
-	function olah($data){
-		$decode  = json_decode($data);
-		$menu    = [];
-		$submenu = [];
 
-		foreach ($decode as $key) {
-			if($key->parent == '#'){
-				$menu[] = ['text' => $key->text, 'ID' => $key->ID];
-			}else{
-				$submenu[] = ['text' => $key->text, 'parent' => $key->parent];
-			}
-		}
-
-		pre($menu);
-		pre($submenu);
-
-		// return $hasil;
-		
-	}
-		function some($data){
+	function some($data){
 		$decode  = json_decode($data);
 		$menu    = [];
 		$submenu = [];
@@ -120,9 +85,6 @@
 
 		$ret = array($menu,$submenu);
 		return $ret;
-
-		// return $hasil;
-		
 	}
 
 	function md56($param,$tipe = null,$jml = null){
@@ -156,42 +118,6 @@
 		return $umur;
 	}
 
-	function random($length='',$tipe='') { 
-
-		if(!empty($tipe)){
-			if($tipe == '1'){
-				$digits_needed = 6;
-                $random_number = '';
-                $count	 	   = 0;
-
-                while ( $count < $digits_needed ) {
-                    $random_digit  = mt_rand(0, 9);
-                    $random_number .= $random_digit;
-                    $count++;
-                }
-
-                return $random_number;
-			}
-		}else{
-			$chars = "abcdefghijkmnopqrstuvwxyzABCDEFGHIZKLMNOPQRSTUVWXYZ0123456789"; 
-		}
-		
-		srand((double)microtime()*1000000); 
-		$i      = 0; 
-		$pass   = '' ;
-		$length = (!empty($length) ? $length : 32);
-	
-		while ($i <= $length) { 
-			$num = rand() % 33; 
-			$tmp = substr($chars, $num, 1); 
-			$pass = $pass . $tmp; 
-			$i++; 
-		} 
-	
-		return $pass; 
-	
-	}
-
 	function templateEmail($param){
 		// pre($param,1);
 		$email = new \SendGrid\Mail\Mail(); 
@@ -220,15 +146,31 @@
 		}
 	}
 
-	function getOptimalBcryptCostParameter($min_ms = 250) {
-		for ($i = 4; $i < 31; $i++) {
-			$options = [ 'cost' => $i, 'salt' => 'usesomesillystringforsalt' ];
-			$time_start = microtime(true);
-			password_hash("rasmuslerdorf", PASSWORD_BCRYPT, $options);
-			$time_end = microtime(true);
-			if (($time_end - $time_start) * 1000 > $min_ms) {
-				return $i;
-			}
+	function implode_dan($list, $conjunction = 'dan') {
+		$last = array_pop($list);
+		if ($list) {
+		  return implode(', ', $list) . ' ' . $conjunction . ' ' . $last;
 		}
+		return $last;
 	}
+
+	function listEmail($list){
+		$temp = [];
+		foreach ($list as $rows) {
+			$temp[] = '<a href="javascript:void(0);" onClick="copas(this)" data-value="'.$rows->admin_email.'">'.$rows->admin_email.'</a>';
+		}
+		
+		return implode_dan($temp);
+	}
+	
+	function genPass($salt,$password){
+		$hasil = sha1(md5($password).$salt);
+		return $hasil;
+	}
+
+	function getSession(){
+		$CI   =& get_instance();
+		return $CI->session->userdata($CI->config->item('nama_session'));
+	}
+
 ?>

@@ -136,7 +136,7 @@
 	    var message = {};
 		global.init_form_validation('.form_add',rules,message);
 
-		global.init_select2('.role','fetch/fetch_global/role/role_id/role_nama','Pilih Role');
+		global.init_select2('.role','fetch/fetch_global/fokus_role/role_id/role_nama','Pilih Role');
 
 		$('#btn_submit').on('click', function(){
 			var child = [];

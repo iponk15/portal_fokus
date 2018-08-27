@@ -5,8 +5,9 @@
                     <div class="m-stack m-stack--ver m-stack--general m-stack--inline">
                         <div class="m-stack__item m-stack__item--middle m-brand__logo">
                             <a href="<?php echo base_url(); ?>" class="m-brand__logo-wrapper">
-                                <img alt="" src="<?php echo base_url(); ?>assets/demo/media/img/logo/inmed_200x63.png" class="m-brand__logo-default"/>
-                                <img alt="" src="<?php echo base_url(); ?>assets/demo/media/img/logo/inmed_200x63.png" class="m-brand__logo-inverse"/>
+                                <!-- <img alt="" src="<?php echo base_url(); ?>assets/demo/media/img/logo/inmed_200x63.png" class="m-brand__logo-default"/>
+                                <img alt="" src="<?php echo base_url(); ?>assets/demo/media/img/logo/inmed_200x63.png" class="m-brand__logo-inverse"/> -->
+                                <h1>Fokus.com</h1>
                             </a>  
                         </div>
                         <div class="m-stack__item m-stack__item--middle m-brand__tools">					
@@ -242,10 +243,10 @@
                                                     </div>
                                                     <div class="m-card-user__details">
                                                         <span class="m-card-user__name m--font-weight-500">
-                                                            <?php echo info_ses($this->session->userdata('homed_session')->user_id)->user_nama; ?>
+                                                            <?php echo getSession()->admin_nama; ?>
                                                         </span>
                                                         <a href="" class="m-card-user__email m--font-weight-300 m-link" style="font-size: x-small;">
-                                                            <?php echo info_ses($this->session->userdata('homed_session')->user_id)->user_email; ?>
+                                                            <?php echo getSession()->admin_email; ?>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -297,63 +298,65 @@
                     <div id="m_header_menu" class="m-header-menu m-aside-header-menu-mobile m-aside-header-menu-mobile--offcanvas  m-header-menu--skin-dark m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-light m-aside-header-menu-mobile--submenu-skin-light "  >		
                         <ul class="m-menu__nav  m-menu__nav--submenu-arrow ">
                             <?php  
-                                $ses 			= $this->session->userdata('homed_session');
-                                $menu_role 		= menu_role($ses->user_role_id);
-                                $group_data 	= json_decode($menu_role[0]->group_data);
+                                $menu_role 		= menu_role(getSession()->admin_role_id);
+                                $group_data 	= (empty($menu_role[0]->group_data) ? null : json_decode($menu_role[0]->group_data));
                                 $uri  			= $this->uri->segment(1) == '' ? 'welcome' : $this->uri->segment(1);
                                 $uri_config  	= $this->uri->segment(1) == '' ? 'config' : $this->uri->segment(1);
                                 $uri_segment 	=  $this->uri->segment(1);
                                 $html 			= '';
-                                // pre($group_data[1]->menu_controllers)
-                                // pre($group_data,1);
-                                foreach ($group_data as $data) {
-                                    
-                                    if(isJSON($data->menu_controllers)){
-                                        $dec_con = json_decode($data->menu_controllers);
-                                        // print_r($dec_con);exit();
-                                        if(in_array($uri, $dec_con)){
-                                            $active_sub = 'm-menu__item--active-tab';
-                                        }else{
+                                
+                                if(empty($group_data)){
+                                    $html = '';
+                                }else{
+                                    foreach ($group_data as $data) {
+                                        
+                                        if(isJSON($data->menu_controllers)){
+                                            $dec_con = json_decode($data->menu_controllers);
+                                            // print_r($dec_con);exit();
+                                            if(in_array($uri, $dec_con)){
+                                                $active_sub = 'm-menu__item--active-tab';
+                                            }else{
+                                                $active_sub = '';
+                                            }
+                                        }else{									
                                             $active_sub = '';
                                         }
-                                    }else{									
-                                        $active_sub = '';
-                                    }
-                                        $paramChild = false;
-                                        if (is_array($data->menu_controllers)) {
-                                            if (in_array($uri, $data->menu_controllers)) {
-                                                $paramChild = true;
-                                            }
-                                        }
-                                    $html .= '
-                                        <li class="m-menu__item m-menu__item--submenu m-menu__item--tabs '.tab_menu($data->menu_is_primary, $data->menu_controllers,  $uri, $paramChild).$active_sub.'"  m-menu-submenu-toggle="tab" aria-haspopup="true">
-                                            <a  href="'.(!empty($data->menu_url) ? $data->menu_url : 'javascript:void(0)' ).'" class="m-menu__link '.(!empty($data->menu_url) ? 'ajaxify single' : 'm-menu__toggle').'">
-                                                <span class="m-menu__link-text">
-                                                    '.$data->menu_nama.'
-                                                </span>
-                                                <i class="m-menu__hor-arrow la la-angle-down"></i>
-                                                <i class="m-menu__ver-arrow la la-angle-right"></i>
-                                            </a>';
-                                                if(!empty($data->menu_sub_menu)){
-                                                    $decode = $data->menu_sub_menu;
-                                                    $html.= '<div class="m-menu__submenu m-menu__submenu--classic m-menu__submenu--left m-menu__submenu--tabs">
-                                                    <span class="m-menu__arrow m-menu__arrow--adjust"></span>
-                                                    <ul class="m-menu__subnav">';
-                                                    foreach ($decode as $submenu) {
-                                                        $html .= '
-                                                            <li class="m-menu__item '.($submenu->controller == $uri ? 'm-menu__item--active' : '').'"  data-redirect="true" aria-haspopup="true">
-                                                                <a  href="'.base_url($submenu->controller).'" class="m-menu__link ajaxify">
-                                                                    <i class="m-menu__link-icon flaticon-'.$submenu->icon_menu.'"></i>
-                                                                    <span class="m-menu__link-text">'.$submenu->text.'</span>
-                                                                </a>
-                                                            </li>';
-                                                    }
-                                                    $html .= '	</ul>
-                                                    </div>';
+                                            $paramChild = false;
+                                            if (is_array($data->menu_controllers)) {
+                                                if (in_array($uri, $data->menu_controllers)) {
+                                                    $paramChild = true;
                                                 }
+                                            }
+                                        $html .= '
+                                            <li class="m-menu__item m-menu__item--submenu m-menu__item--tabs '.tab_menu($data->menu_is_primary, $data->menu_controllers,  $uri, $paramChild).$active_sub.'"  m-menu-submenu-toggle="tab" aria-haspopup="true">
+                                                <a  href="'.(!empty($data->menu_url) ? $data->menu_url : 'javascript:void(0)' ).'" class="m-menu__link '.(!empty($data->menu_url) ? 'ajaxify single' : 'm-menu__toggle').'">
+                                                    <span class="m-menu__link-text">
+                                                        '.$data->menu_nama.'
+                                                    </span>
+                                                    <i class="m-menu__hor-arrow la la-angle-down"></i>
+                                                    <i class="m-menu__ver-arrow la la-angle-right"></i>
+                                                </a>';
+                                                    if(!empty($data->menu_sub_menu)){
+                                                        $decode = $data->menu_sub_menu;
+                                                        $html.= '<div class="m-menu__submenu m-menu__submenu--classic m-menu__submenu--left m-menu__submenu--tabs">
+                                                        <span class="m-menu__arrow m-menu__arrow--adjust"></span>
+                                                        <ul class="m-menu__subnav">';
+                                                        foreach ($decode as $submenu) {
+                                                            $html .= '
+                                                                <li class="m-menu__item '.($submenu->controller == $uri ? 'm-menu__item--active' : '').'"  data-redirect="true" aria-haspopup="true">
+                                                                    <a  href="'.base_url($submenu->controller).'" class="m-menu__link ajaxify">
+                                                                        <i class="m-menu__link-icon flaticon-'.$submenu->icon_menu.'"></i>
+                                                                        <span class="m-menu__link-text">'.$submenu->text.'</span>
+                                                                    </a>
+                                                                </li>';
+                                                        }
+                                                        $html .= '	</ul>
+                                                        </div>';
+                                                    }
 
-                                    $html .='
-                                        </li>';
+                                        $html .='
+                                            </li>';
+                                    }
                                 }
 
                                 echo $html;
