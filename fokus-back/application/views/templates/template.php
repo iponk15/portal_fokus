@@ -23,7 +23,7 @@
         <link href="<?php echo base_url('assets/vendors/base/vendors.bundle.css'); ?>" rel="stylesheet" type="text/css" />
         <link href="<?php echo base_url('assets/demo/base/style.bundle.css'); ?>" rel="stylesheet" type="text/css" />
         <link href="<?php echo base_url('assets/app/css/custom.css'); ?>" rel="stylesheet" type="text/css" />
-        <link rel="shortcut icon" href="<?php echo base_url('assets/app/media/img/icons/favicon.png'); ?>" />
+        <link rel="shortcut icon" href="<?php //echo base_url('assets/app/media/img/icons/favicon.png'); ?>" />
         <?php 
             foreach ( $this->config->item('plugin') as $key => $value) {
                 get_additional( $value, 'css' );
@@ -58,7 +58,7 @@
             });
         </script> 
     </head>
-    <body   class="m-page--fluid m-page--loading-enabled m-page--loading m-header--fixed m-header--fixed-mobile m-footer--push m-aside--offcanvas-default"  >
+    <body style="background-image: url('assets/app/media/img/bg/bg-11.png');"   class="m-page--fluid m-page--loading-enabled m-page--loading m-header--fixed m-header--fixed-mobile m-footer--push m-aside--offcanvas-default"  >
         <div class="m-page-loader m-page-loader--base">
             <div class="m-blockui">
                 <span>Please wait...</span>

@@ -2,7 +2,7 @@
 	$CI = &get_instance();
 	$CI->load->library( 'session' );
 
-	$ex          = array('login');
+	$ex          = array('login','auth');
 	$session     = $CI->session->userdata('fksSes');
     $status_link = @$CI->input->post('status_link');
 

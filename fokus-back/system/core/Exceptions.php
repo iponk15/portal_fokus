@@ -116,8 +116,7 @@ class CI_Exceptions {
 	 * @param 	bool	$log_error	Whether to log the error
 	 * @return	void
 	 */
-	public function show_404($page = '', $log_error = TRUE)
-	{
+	public function show_404($page = '', $log_error = TRUE){
 		if (is_cli())
 		{
 			$heading = 'Not Found';

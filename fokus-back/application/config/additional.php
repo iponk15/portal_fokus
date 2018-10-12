@@ -13,7 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | 
 |
 */
-$config['plugin'] = ['datatables'];
+$config['plugin'] = ['datatables','ckeditor'];
 /*
 |--------------------------------------------------------------------------
 | Aplication Name

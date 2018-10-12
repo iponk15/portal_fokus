@@ -1,18 +1,6 @@
 {
-	"description": "The CodeIgniter framework with HMVC Library",
-	"name": "alzen8work/ci_hmvc",
-	"type": "project",
-	"homepage": "https://github.com/alzen8work/ci_hmvc",
-	"license": "MIT",
-	"require": {
-		"php": ">=5.2.4",
-		"sendgrid/sendgrid": "~7"
-	},
-	"suggest": {
-		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
-	},
-	"require-dev": {
-		"mikey179/vfsStream": "1.1.*",
-		"phpunit/phpunit": "4.* || 5.*"
-	}
+    "require": {
+        "monolog/monolog": "1.0.*",
+        "sendgrid/sendgrid": "~7"
+    }
 }

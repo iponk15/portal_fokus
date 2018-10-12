@@ -211,9 +211,8 @@ class Menu extends CI_Controller {
 	public function action_edit($id)
 	{
 		$post 	= $this->input->post();		
-		$ses 	= $this->session->userdata('homed_session');
-		$object 		= [];
-		$c_menu 	= array();
+		$object = [];
+		$c_menu = array();
 
 		if (empty($post['order'])) {
 			$data['menu_nama']			= $post['menu_nama'];
@@ -223,7 +222,7 @@ class Menu extends CI_Controller {
 			$data['menu_controllers'] 	= $post['menu_ctrl'];
 			$data['menu_lastupdate']  	= date('Y-m-d H:i:s');
 			$data['menu_ip_temp']     	= getUserIP();
-			$data['menu_udpatedby']   	= $ses->user_id;
+			$data['menu_udpatedby']   	= getSession()->admin_id;
 			$update 				  	= $this->m_global->update($this->table_db, $data, ['menu_id' => $id]);
 			if ($update) {
 				$end['status']     = 1;
@@ -233,8 +232,7 @@ class Menu extends CI_Controller {
 				$end['message']    = 'failed';
 			}
 			echo json_encode( $end );
-		}
-		else{
+		}else{
 			$count_order = array_count_values($post['order']);
 
 			$status = 'unique';
@@ -279,7 +277,7 @@ class Menu extends CI_Controller {
 					$data['menu_controllers'] = ($post['menu_ctrl'] == '' ? json_encode($post['ctrl_submenu']) : $post['menu_ctrl']);
 					$data['menu_lastupdate']  = date('Y-m-d H:i:s');
 					$data['menu_ip_temp']     = getUserIP();
-					$data['menu_udpatedby']   = $ses->user_id;
+					$data['menu_udpatedby']   = getSession()->admin_id;
 					$update 				  = $this->m_global->update($this->table_db, $data, ['menu_id' => $id]);
 					if ($update) {
 						$end['status']     = 1;
