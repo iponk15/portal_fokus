@@ -257,7 +257,7 @@
 		    // "attachment"
 		// );
 
-		$sendgrid = new \SendGrid("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");
+		$sendgrid = new \SendGrid("API_KEY");
 
 		try {
 			$response = $sendgrid->send($email);

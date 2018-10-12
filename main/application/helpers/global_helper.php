@@ -201,7 +201,7 @@
 		$email->addContent("text/plain", $param['mesage']);
 		// $email->addContent("text/html", "<strong>and easy to do anywhere, even with PHP</strong>");
 
-		$sendgrid = new \SendGrid("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");
+		$sendgrid = new \SendGrid("API_KEY");
 
 		try {
 			$response = $sendgrid->send($email);
